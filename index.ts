@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db";
+import globalErrorHandler from "./middlewares/globalErrorHandler";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ const app = express();
 // CORS OPTIONS
 const corsOption = {
   origin: process.env.FRONTEND_URL,
-  credential: true,
+  credentials: true,
 };
 
 app.use(cors(corsOption));
@@ -23,5 +24,10 @@ app.use(cookieParser());
 
 // CONNECT WITH DATABASE
 connectDB();
+
+// ROUTES
+
+// CATCH GLOBAL ERRORS
+app.use(globalErrorHandler);
 
 app.listen(PORT, () => console.log(`Server running at port: ${PORT}`));
