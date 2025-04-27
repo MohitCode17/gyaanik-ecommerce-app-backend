@@ -3,7 +3,10 @@ import User from "../models/user-models";
 import createHttpError from "http-errors";
 import crypto from "crypto";
 import { responseHandler } from "../utils/responseHandler";
-import { sendVerificationEmail } from "../config/emailConfig";
+import {
+  sendResetPasswordLinkToEmail,
+  sendVerificationEmail,
+} from "../config/emailConfig";
 import { generateToken } from "../utils/generateToken";
 
 export const register = async (
@@ -47,7 +50,6 @@ export const register = async (
 
     // SEND VERIFICATION EMAIL
     const result = await sendVerificationEmail(user.email, verificationToken);
-    console.log("Result", result);
 
     // RESPONSE HANDLER
     return responseHandler(
@@ -92,6 +94,8 @@ export const verifyEmail = async (
     });
 
     await user.save();
+
+    return responseHandler(res, 200, "Email verified succesfully");
   } catch (error) {
     // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
     console.error("Error during verify email:", error);
@@ -142,10 +146,96 @@ export const login = async (
     // RESPONSE HANDLER
     return responseHandler(res, 200, "User login successfully.", {
       user: { name: user.name, email: user.email },
-    }); 
+    });
   } catch (error) {
     // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
     console.error("Error during login:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return next(createHttpError(400, "Email is required!"));
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return next(createHttpError(400, "No account found with this email!"));
+    }
+
+    // CREATE A RESET PASSWORD TOKEN
+    const resetPasswordToken = crypto.randomBytes(20).toString("hex");
+
+    user.resetPasswordToken = resetPasswordToken;
+    user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 HOUR PASSWORD EXPIRATION DURATION
+
+    await user.save();
+
+    await sendResetPasswordLinkToEmail(user.email, resetPasswordToken);
+
+    return responseHandler(
+      res,
+      200,
+      "A password reset link has been sent to your email."
+    );
+  } catch (error) {
+    // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
+    console.error("Error during sending reset password link:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.params;
+    const { newPassword } = req.body;
+
+    let user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return next(
+        createHttpError(400, "Invalid or expired reset password token")
+      );
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    return responseHandler(
+      res,
+      200,
+      "Your password reset succesfully. You can now login with your new credentials"
+    );
+  } catch (error) {
+    // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
+    console.error("Error during reset password:", error);
 
     if (error instanceof createHttpError.HttpError) {
       return next(error);

@@ -10,6 +10,12 @@ router.post("/register", authController.register);
 router.post("/login", authController.login);
 
 // VERIFY EMAIL
-router.get("/verify-email", authController.verifyEmail);
+router.get("/verify-email/:token", authController.verifyEmail);
+
+// FORGOT PASSWORD
+router.post("/forgot-password", authController.forgotPassword);
+
+// RESET PASSWORD
+router.post("/reset-password/:token", authController.resetPassword);
 
 export default router;
