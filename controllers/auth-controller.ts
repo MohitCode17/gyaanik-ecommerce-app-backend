@@ -263,3 +263,32 @@ export const logout = async (
     return next(createHttpError(500, "Internal server error"));
   }
 };
+
+export const checkUserAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req?.id;
+
+    if (!userId) {
+      return next(createHttpError(401, "Unauthorized please login to access!"));
+    }
+
+    const user = await User.findById(userId).select(
+      "-password -verificationToken -resetPasswordToken -resetPasswordExpires"
+    );
+
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+
+    return responseHandler(res, 200, "User fetch successfully", user);
+  } catch (error) {
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};

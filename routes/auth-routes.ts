@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as authController from "../controllers/auth-controller";
+import { authenticate } from "../middlewares/authenticate";
 
 const router = Router();
 
@@ -20,5 +21,8 @@ router.post("/reset-password/:token", authController.resetPassword);
 
 // LOGOUT ROUTE
 router.get("/logout", authController.logout);
+
+// AUTHENTICATE USER
+router.get("/verify-auth", authenticate, authController.checkUserAuth);
 
 export default router;
