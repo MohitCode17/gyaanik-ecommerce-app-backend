@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 import crypto from "crypto";
 import { responseHandler } from "../utils/responseHandler";
 import { sendVerificationEmail } from "../config/emailConfig";
+import { generateToken } from "../utils/generateToken";
 
 export const register = async (
   req: Request,
@@ -51,12 +52,100 @@ export const register = async (
     // RESPONSE HANDLER
     return responseHandler(
       res,
-      200,
+      201,
       "User register successfully, Please check your mail inbox to verify your account."
     );
   } catch (error) {
     // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
     console.error("Error during registration:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export const verifyEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.params;
+
+    let user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+
+    // ISSUE ACCESS TOKEN
+    const accessToken = generateToken(user);
+
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    await user.save();
+  } catch (error) {
+    // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
+    console.error("Error during verify email:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
+
+    // VALIDATIONS
+    if (!email || !password) {
+      return next(createHttpError(400, "All fields are required"));
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user || !(await user.comparePassword(password))) {
+      return next(createHttpError(400, "Invalid email or password"));
+    }
+
+    if (!user.isVerified) {
+      return next(
+        createHttpError(
+          400,
+          "Please verify your email before login. Check you email inbox to verify"
+        )
+      );
+    }
+
+    // ISSUE ACCESS TOKEN
+    const accessToken = generateToken(user);
+
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    // RESPONSE HANDLER
+    return responseHandler(res, 200, "User login successfully.", {
+      user: { name: user.name, email: user.email },
+    }); 
+  } catch (error) {
+    // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
+    console.error("Error during login:", error);
 
     if (error instanceof createHttpError.HttpError) {
       return next(error);
