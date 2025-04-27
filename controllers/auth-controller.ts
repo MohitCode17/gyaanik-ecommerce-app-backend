@@ -243,3 +243,23 @@ export const resetPassword = async (
     return next(createHttpError(500, "Internal server error"));
   }
 };
+
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res.clearCookie("access_token", { httpOnly: true });
+
+    return responseHandler(res, 200, "User logout successfully.");
+  } catch (error) {
+    // LOG THE ERROR TO THE CONSOLE FOR DEBUGGING
+    console.error("Error during logout:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
