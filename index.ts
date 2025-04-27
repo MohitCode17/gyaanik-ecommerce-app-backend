@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 
+import authRoutes from "./routes/auth-routes";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
@@ -20,12 +22,14 @@ app.use(cors(corsOption));
 
 // MIDDLEWARES
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // CONNECT WITH DATABASE
 connectDB();
 
 // ROUTES
+app.use("/api/auth", authRoutes);
 
 // CATCH GLOBAL ERRORS
 app.use(globalErrorHandler);
