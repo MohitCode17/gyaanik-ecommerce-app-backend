@@ -91,3 +91,24 @@ export const createProduct = async (
     return next(createHttpError(500, "Internal server error"));
   }
 };
+
+export const getProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .populate("seller", "name email");
+
+    return responseHandler(res, 200, "Product fetched successfully", products);
+  } catch (error) {
+    console.error("Error during fetching a products:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};

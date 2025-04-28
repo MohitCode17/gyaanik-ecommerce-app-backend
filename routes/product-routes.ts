@@ -12,4 +12,6 @@ router.post(
   productController.createProduct
 );
 
+router.get("/", authenticate, productController.getProducts);
+
 export default router;
