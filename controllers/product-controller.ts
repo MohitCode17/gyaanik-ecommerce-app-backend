@@ -102,9 +102,39 @@ export const getProducts = async (
       .sort({ createdAt: -1 })
       .populate("seller", "name email");
 
-    return responseHandler(res, 200, "Product fetched successfully", products);
+    return responseHandler(res, 200, "Products fetched successfully", products);
   } catch (error) {
     console.error("Error during fetching a products:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export const getProductById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const product = await Product.findById(req.params.id).populate({
+      path: "seller",
+      select: "name email profilePicture phoneNumber",
+      populate: {
+        path: "address",
+        model: "Address",
+      },
+    });
+
+    if (!product) {
+      return next(createHttpError(404, "No Product Found"));
+    }
+
+    return responseHandler(res, 200, "Product fetched successfully", product);
+  } catch (error) {
+    console.error("Error during fetching a product:", error);
 
     if (error instanceof createHttpError.HttpError) {
       return next(error);
