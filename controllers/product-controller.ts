@@ -142,3 +142,62 @@ export const getProductById = async (
     return next(createHttpError(500, "Internal server error"));
   }
 };
+
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+
+    if (!product) {
+      return next(createHttpError(404, "No Product Found"));
+    }
+
+    return responseHandler(res, 200, "Product deleted successfully");
+  } catch (error) {
+    console.error("Error during create a product:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export const getProductBySellerId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const sellerId = req.params.sellerId;
+
+    if (!sellerId) {
+      return next(createHttpError(404, "Seller not found"));
+    }
+
+    const product = await Product.find({ seller: sellerId })
+      .sort({ createdAt: -1 })
+      .populate("seller", "name email profilePicture phoneNumber");
+
+    if (!product) {
+      return next(createHttpError(404, "No Product Found"));
+    }
+
+    return responseHandler(
+      res,
+      200,
+      "Product fetched successfully by seller id",
+      product
+    );
+  } catch (error) {
+    console.error("Error during fetching a product:", error);
+
+    if (error instanceof createHttpError.HttpError) {
+      return next(error);
+    }
+    return next(createHttpError(500, "Internal server error"));
+  }
+};

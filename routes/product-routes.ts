@@ -16,4 +16,12 @@ router.get("/", authenticate, productController.getProducts);
 
 router.get("/:id", authenticate, productController.getProductById);
 
+router.delete("/seller/:id", authenticate, productController.deleteProduct);
+
+router.get(
+  "/seller/:sellerId",
+  authenticate,
+  productController.getProductBySellerId
+);
+
 export default router;
