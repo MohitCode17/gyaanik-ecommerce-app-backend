@@ -6,6 +6,7 @@ import { connectDB } from "./config/db";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 
 import authRoutes from "./routes/auth-routes";
+import productRoutes from "./routes/product-routes";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ connectDB();
 
 // ROUTES
 app.use("/api/auth", authRoutes);
+app.use("/api/product", productRoutes);
 
 // CATCH GLOBAL ERRORS
 app.use(globalErrorHandler);
