@@ -8,6 +8,7 @@ import globalErrorHandler from "./middlewares/globalErrorHandler";
 import authRoutes from "./routes/auth-routes";
 import productRoutes from "./routes/product-routes";
 import cartRoutes from "./routes/cart-routes";
+import wishlistRoutes from "./routes/wishlist-routes";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 // CATCH GLOBAL ERRORS
 app.use(globalErrorHandler);
