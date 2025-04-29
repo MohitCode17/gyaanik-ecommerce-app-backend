@@ -24,6 +24,8 @@
     "mongoose": "^8.14.0",
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.10.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
@@ -33,6 +35,8 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/multer": "^1.4.12",
     "@types/nodemailer": "^6.4.17",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.16",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2"
   }
