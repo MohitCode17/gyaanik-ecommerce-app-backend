@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth-routes";
 import productRoutes from "./routes/product-routes";
 import cartRoutes from "./routes/cart-routes";
 import wishlistRoutes from "./routes/wishlist-routes";
+import addressRoutes from "./routes/address-routes";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/user/address", addressRoutes);
 
 // CATCH GLOBAL ERRORS
 app.use(globalErrorHandler);
