@@ -7,6 +7,7 @@ import globalErrorHandler from "./middlewares/globalErrorHandler";
 
 import authRoutes from "./routes/auth-routes";
 import productRoutes from "./routes/product-routes";
+import cartRoutes from "./routes/cart-routes";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ connectDB();
 // ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/cart", cartRoutes);
 
 // CATCH GLOBAL ERRORS
 app.use(globalErrorHandler);
