@@ -11,6 +11,7 @@ import cartRoutes from "./routes/cart-routes";
 import wishlistRoutes from "./routes/wishlist-routes";
 import addressRoutes from "./routes/address-routes";
 import userRoutes from "./routes/user-routes";
+import orderRoutes from "./routes/order-routes";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/user/address", addressRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/order", orderRoutes);
 
 // CATCH GLOBAL ERRORS
 app.use(globalErrorHandler);
