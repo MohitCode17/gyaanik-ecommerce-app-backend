@@ -74,12 +74,12 @@ export const verifyEmail = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.params;
+    const { token } = req.params;
 
     let user = await User.findOne({ verificationToken: token });
 
     if (!user) {
-      return next(createHttpError(404, "User not found"));
+      return responseHandler(res, 400, "Invalid or expired verification token");
     }
 
     user.isVerified = true;
@@ -208,7 +208,7 @@ export const resetPassword = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.params;
+    const { token } = req.params;
     const { newPassword } = req.body;
 
     let user = await User.findOne({
