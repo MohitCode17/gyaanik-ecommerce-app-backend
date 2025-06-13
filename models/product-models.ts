@@ -8,7 +8,7 @@ export interface IProduct extends Document {
   condition: string;
   classType: string;
   price: number;
-  author: string;
+  author?: string;
   edition?: string;
   description?: string;
   finalPrice: number;
@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema<IProduct>(
     condition: { type: String, required: true },
     classType: { type: String, required: true },
     price: { type: Number, required: true },
-    author: { type: String, required: true },
+    author: { type: String },
     edition: { type: String },
     description: { type: String },
     finalPrice: { type: Number, required: true },

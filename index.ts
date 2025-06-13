@@ -12,6 +12,7 @@ import wishlistRoutes from "./routes/wishlist-routes";
 import addressRoutes from "./routes/address-routes";
 import userRoutes from "./routes/user-routes";
 import orderRoutes from "./routes/order-routes";
+import passport from "./controllers/strategy/googleStrategy";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use(cors(corsOption));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 // CONNECT WITH DATABASE
 connectDB();
