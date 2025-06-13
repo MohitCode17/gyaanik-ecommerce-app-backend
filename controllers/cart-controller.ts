@@ -91,7 +91,7 @@ export const getCartByUser = async (
   try {
     const userId = req.params.userId;
 
-    let cart = await Cart.findOne({ user: userId });
+    let cart = await Cart.findOne({ user: userId }).populate("items.product");
 
     if (!cart) {
       return responseHandler(res, 404, "Cart is empty", { items: [] });
