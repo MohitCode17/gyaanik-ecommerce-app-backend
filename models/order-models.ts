@@ -40,12 +40,10 @@ const orderSchema = new mongoose.Schema<IOrder>(
     },
     items: [orderItemsSchema],
     totalAmount: { type: Number },
-    shippingAddress: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
-      },
-    ],
+    shippingAddress: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
+    },
     paymentStatus: {
       type: String,
       enum: ["pending", "complete", "failed"],
