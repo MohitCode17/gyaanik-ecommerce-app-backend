@@ -36,7 +36,7 @@ Built with **Node.js, Express, MongoDB, and JWT**.
 # Clone the repository
 
 ```bash
-git clone https://github.com/your-username/bookstore-backend.git
+git clone git@github.com:MohitCode17/gyaanik-ecommerce-app-backend.git
 ```
 
 # Go to backend folder
