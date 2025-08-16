@@ -12,9 +12,9 @@ router.post(
   productController.createProduct
 );
 
-router.get("/", authenticate, productController.getProducts);
+router.get("/", productController.getProducts);
 
-router.get("/:id", authenticate, productController.getProductById);
+router.get("/:id", productController.getProductById);
 
 router.delete("/seller/:id", authenticate, productController.deleteProduct);
 
