@@ -10,7 +10,7 @@ dotenv.config();
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY as string,
-  key_secret: process.env.RAZORPAY_SECRET as string,
+  key_secret: process.env.RAZORPAY_KEY_SECRET as string,
 });
 
 export const createOrUpdateOrder = async (
