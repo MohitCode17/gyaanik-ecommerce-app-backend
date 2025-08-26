@@ -75,13 +75,13 @@ export const getWishlistByUser = async (
   try {
     const userId = req.params.userId;
 
-    let wishlist = await Wishlist.findOne({ user: userId });
+    let wishlist = await Wishlist.findOne({ user: userId }).populate(
+      "products"
+    );
 
     if (!wishlist) {
       return responseHandler(res, 404, "Wishlist is empty", { items: [] });
     }
-
-    await wishlist.save();
 
     return responseHandler(
       res,

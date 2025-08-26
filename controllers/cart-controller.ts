@@ -3,6 +3,7 @@ import Product from "../models/product-models";
 import Cart, { ICartItem } from "../models/cart-models";
 import createHttpError from "http-errors";
 import { responseHandler } from "../utils/responseHandler";
+import mongoose from "mongoose";
 
 export const addToCart = async (
   req: Request,
@@ -91,13 +92,16 @@ export const getCartByUser = async (
   try {
     const userId = req.params.userId;
 
+    // ✅ If userId is missing or invalid
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return next(createHttpError(400, "Invalid or missing user ID"));
+    }
+
     let cart = await Cart.findOne({ user: userId }).populate("items.product");
 
     if (!cart) {
       return responseHandler(res, 404, "Cart is empty", { items: [] });
     }
-
-    await cart.save();
 
     return responseHandler(res, 200, "User cart get successfully", cart);
   } catch (error) {
