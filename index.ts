@@ -12,6 +12,7 @@ import wishlistRoutes from "./routes/wishlist-routes";
 import addressRoutes from "./routes/address-routes";
 import userRoutes from "./routes/user-routes";
 import orderRoutes from "./routes/order-routes";
+import adminRoutes from "./routes/admin-routes";
 import passport from "./controllers/strategy/googleStrategy";
 
 dotenv.config();
@@ -44,6 +45,7 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/user/address", addressRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/admin", adminRoutes);
 
 // CATCH GLOBAL ERRORS
 app.use(globalErrorHandler);
