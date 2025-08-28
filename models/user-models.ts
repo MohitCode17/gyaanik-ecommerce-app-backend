@@ -15,6 +15,7 @@ export interface IUSER extends Document {
   agreeTerms: boolean;
   address: mongoose.Types.ObjectId[];
   comparePassword(candidatePassword: string): Promise<boolean>;
+  role: "user" | "admin";
 }
 
 // USER SCHEMA
@@ -32,6 +33,7 @@ const userSchema = new mongoose.Schema<IUSER>(
     resetPasswordExpires: { type: Date, default: null },
     agreeTerms: { type: Boolean, default: false },
     address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
+    role: { type: String, enum: ["user", "admin"], default: "user" },
   },
   { timestamps: true }
 );
