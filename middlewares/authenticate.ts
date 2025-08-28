@@ -6,6 +6,7 @@ declare global {
   namespace Express {
     interface Request {
       id: string;
+      role: string;
     }
   }
 }
@@ -34,6 +35,7 @@ export const authenticate = async (
     }
 
     req.id = decode.userId;
+    req.role = decode.role;
     next();
   } catch (error) {
     return next(

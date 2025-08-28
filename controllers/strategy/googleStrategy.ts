@@ -42,6 +42,7 @@ passport.use(
           profilePicture: photos?.[0]?.value,
           isVerified: emails?.[0]?.verified,
           agreeTerms: true,
+          role: "user",
         });
 
         done(null, user);
